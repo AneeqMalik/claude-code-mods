@@ -77,9 +77,13 @@ The cost model (relative prices, expected turns per switch) uses assumptions in 
 
 ## 📊 usage-status
 
+<p align="center"><img src="docs/usage-status.png" alt="usage-status pill: context, model, cost, 5-hour and 7-day limits" width="720"></p>
+
 A pill above the prompt showing the current model, context used, session cost and rate-limit usage with time to reset. It turns to a warning state at 80% and auto-compacts the conversation at 250k tokens. With auto-model installed, it shows the model actually sent and notices when you change it with `/model`.
 
 ## 🪙 token-usage
+
+<p align="center"><img src="docs/token-usage.png" alt="token-usage pane: new input, cache read, cache write, output" width="300"></p>
 
 `/tokens` opens a narrow pane beside the transcript charting this session's tokens in four colourblind-safe series: **new input**, **cache read**, **cache write** and **output**, updated turn by turn.
 
