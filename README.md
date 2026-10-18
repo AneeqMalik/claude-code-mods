@@ -2,14 +2,14 @@
 
 # 🧩 claude-code-mods
 
-**Five small mods that make Claude Code cheaper, clearer and safer on Windows.**
+**Four small mods that make Claude Code cheaper and clearer to use.**
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Mods](https://img.shields.io/badge/mods-5-blue.svg)](#-the-mods)
+[![Mods](https://img.shields.io/badge/mods-4-blue.svg)](#-the-mods)
 [![Made for Claude Code](https://img.shields.io/badge/made%20for-Claude%20Code-D97757.svg)](https://claude.com/claude-code)
 [![Stars](https://img.shields.io/github/stars/AneeqMalik/claude-code-mods?style=social)](https://github.com/AneeqMalik/claude-code-mods)
 
-[Quick start](#-quick-start) · [The mods](#-the-mods) · [auto-model](#-auto-model) · [Develop](#-develop)
+[Quick start](#-quick-start) · [The mods](#-the-mods) · [auto-model](#-auto-model) · [Contributing](#-contributing)
 
 </div>
 
@@ -22,18 +22,27 @@ Claude Code is configurable, but the defaults leave money and context on the tab
 - 💸 Every turn ran on one model, even when Haiku would do.
 - 🔭 No live view of context, cost, rate limits or cache usage.
 - 🗑️ MCP servers I never called still cost tokens at startup.
-- 🪟 A few shell commands hang or fail on Windows, every time.
 
 Each mod is independent. Install only the ones you want.
 
 ## 🚀 Quick start
 
+Add the marketplace once:
+
 ```
 /plugin marketplace add AneeqMalik/claude-code-mods
-/plugin install auto-model@claude-code-mods
 ```
 
-Swap `auto-model` for any mod below.
+Then install only the mods you want, one at a time:
+
+```
+/plugin install auto-model@claude-code-mods
+/plugin install usage-status@claude-code-mods
+/plugin install token-usage@claude-code-mods
+/plugin install trim-startup-context@claude-code-mods
+```
+
+Mods are independent, so any combination works. `usage-status` shows the routed model when `auto-model` is also installed, but needs nothing from it.
 
 ## 🧰 The mods
 
@@ -43,7 +52,6 @@ Swap `auto-model` for any mod below.
 | 📊 | [**usage-status**](#-usage-status) | A pill above the prompt: model, context, cost, rate limits. Auto-compacts at 250k. | |
 | 🪙 | [**token-usage**](#-token-usage) | A live pane charting input, output and cache tokens. | `/tokens` |
 | ✂️ | [**trim-startup-context**](#%EF%B8%8F-trim-startup-context) | Finds and denies MCP servers you never use. | `/trim-context` |
-| 🛡️ | [**shell-guard**](#%EF%B8%8F-shell-guard) | Blocks Bash commands known to hang or fail on Windows, with the fix. | |
 
 ---
 
@@ -97,27 +105,7 @@ MCP servers add their tool schemas to every session's startup context, used or n
 /trim-context undo      revert, and stop auto-trimming this project
 ```
 
-## 🛡️ shell-guard
-
-Blocks Bash commands that hang or fail on Windows, and says what to do instead.
-
-| Blocked | Why | Use instead |
-| --- | --- | --- |
-| `cat > file` with no heredoc or input | Waits on stdin forever | The Write tool, or a heredoc |
-| Python string ending in a backslash before the quote | Syntax error | A raw string, or `chr(92)` |
-
-Add your own rules in `shell-guard/hooks/lib.ts` as `{ test, why }` entries.
-
 ---
-
-## 🛠️ Develop
-
-```
-claude plugin validate <mod folder>
-claude plugin test <mod folder>
-```
-
-Each mod keeps its logic in `hooks/lib.ts` with tests beside it, and the Claude Code wiring in `hooks/register.ts(x)`.
 
 ## 🤝 Contributing
 

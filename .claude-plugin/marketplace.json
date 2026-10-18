@@ -10,11 +10,6 @@
       "description": "Pill above the prompt: model, context, cost, rate limits."
     },
     {
-      "name": "shell-guard",
-      "source": "./shell-guard",
-      "description": "Denies Bash commands known to hang or fail on Windows."
-    },
-    {
       "name": "trim-startup-context",
       "source": "./trim-startup-context",
       "description": "/trim-context finds unused MCP servers; apply denies them, undo reverts."
