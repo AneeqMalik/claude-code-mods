@@ -1,0 +1,1 @@
+{ "name": "usage-status", "version": "0.6.2", "description": "A pill above the prompt showing model, context, cost and rate limits; auto-compacts at 250k tokens.", "types": "./types/index.d.ts" }

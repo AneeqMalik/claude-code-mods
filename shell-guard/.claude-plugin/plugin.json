@@ -1,0 +1,1 @@
+{ "name": "shell-guard", "version": "0.1.0", "description": "Denies Bash commands that are known to hang or fail on Windows, with the fix in the message." }

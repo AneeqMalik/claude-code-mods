@@ -1,0 +1,1 @@
+{ "name": "trim-startup-context", "version": "0.2.0", "description": "Finds MCP servers whose tool schemas bloat startup context but are never used, and denies them automatically per project; /trim-context undo reverts." }

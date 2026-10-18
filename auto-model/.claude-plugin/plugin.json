@@ -1,0 +1,1 @@
+{ "name": "auto-model", "version": "0.4.0", "description": "Routes each turn to Haiku, Sonnet or Opus by workload, and only switches when the prompt-cache re-write cost is worth it." }
