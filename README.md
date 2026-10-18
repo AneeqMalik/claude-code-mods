@@ -35,6 +35,33 @@ A classifier (Haiku) labels each prompt simple, moderate or complex and maps it 
 
 The cost model (relative prices, expected turns per switch) uses assumptions in `hooks/lib.ts`, not billing data. Adjust them to your plan.
 
+## usage-status
+
+A pill above the prompt showing the current model, context used, session cost and rate-limit usage with time to reset. It turns to a warning state at 80%. It auto-compacts the conversation at 250k tokens. If auto-model is installed, the pill shows the model actually sent and notices when you change it with `/model`.
+
+## token-usage
+
+`/tokens` opens a narrow pane beside the transcript charting this session's tokens in four series: new input, cache read, cache write and output, with the last turns shown as they happen. Colours are colourblind-safe.
+
+## trim-startup-context
+
+MCP servers add their tool schemas to every session's startup context, used or not. This mod scans your last 30 session transcripts and finds servers that are loaded but never called. With at least 5 sessions of history it denies them for the current project automatically.
+
+```
+/trim-context           show unused servers and the tokens they cost
+/trim-context apply     deny them in this project
+/trim-context undo      revert, and stop auto-trimming this project
+```
+
+## shell-guard
+
+Blocks Bash commands that are known to hang or fail on Windows, and says what to do instead. Current rules:
+
+- `cat > file` with no heredoc or input waits on stdin forever. Use the Write tool or a heredoc.
+- A Python string literal ending in a backslash before the closing quote is a syntax error. Use a raw string or `chr(92)`.
+
+Rules live in `shell-guard/hooks/lib.ts`; add your own as `{ test, why }` entries.
+
 ## Develop
 
 Each mod has tests: `claude plugin test <mod folder>` and `claude plugin validate <mod folder>`.
