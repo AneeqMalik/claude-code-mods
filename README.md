@@ -1,51 +1,91 @@
-# claude-code-mods
+<div align="center">
 
-Mods for Claude Code: small plugins that change its interface and behaviour.
+# 🧩 claude-code-mods
 
-| Mod | What it does |
-| --- | --- |
-| **auto-model** | Routes each turn to Haiku, Sonnet or Opus by workload, and only switches when the prompt-cache re-write cost is worth it. |
-| **usage-status** | A pill above the prompt showing model, context, cost and rate limits; auto-compacts at 250k tokens. |
-| **token-usage** | A pane beside the transcript charting input, output and cache tokens. `/tokens` opens it. |
-| **trim-startup-context** | `/trim-context` finds MCP servers whose tool schemas bloat startup context but are never used, and denies them per project. `/trim-context undo` reverts. |
-| **shell-guard** | Denies Bash commands known to hang or fail on Windows, with the fix in the message. |
+**Five small mods that make Claude Code cheaper, clearer and safer on Windows.**
 
-## Install
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Mods](https://img.shields.io/badge/mods-5-blue.svg)](#-the-mods)
+[![Made for Claude Code](https://img.shields.io/badge/made%20for-Claude%20Code-D97757.svg)](https://claude.com/claude-code)
+[![Stars](https://img.shields.io/github/stars/AneeqMalik/claude-code-mods?style=social)](https://github.com/AneeqMalik/claude-code-mods)
+
+[Quick start](#-quick-start) · [The mods](#-the-mods) · [auto-model](#-auto-model) · [Develop](#-develop)
+
+</div>
+
+---
+
+## ✨ Why
+
+Claude Code is configurable, but the defaults leave money and context on the table. These mods fix the things I kept hitting:
+
+- 💸 Every turn ran on one model, even when Haiku would do.
+- 🔭 No live view of context, cost, rate limits or cache usage.
+- 🗑️ MCP servers I never called still cost tokens at startup.
+- 🪟 A few shell commands hang or fail on Windows, every time.
+
+Each mod is independent. Install only the ones you want.
+
+## 🚀 Quick start
 
 ```
 /plugin marketplace add AneeqMalik/claude-code-mods
 /plugin install auto-model@claude-code-mods
 ```
 
-Replace `auto-model` with any mod above. Install only the ones you want.
+Swap `auto-model` for any mod below.
 
-## auto-model
+## 🧰 The mods
 
-A classifier (Haiku) labels each prompt simple, moderate or complex and maps it to Haiku, Sonnet or Opus. Switching models invalidates the prompt cache, so a downgrade only happens when the cheaper model repays the cache re-write within a few turns. Upgrades are always allowed. If you pick a model with `/model`, auto-model pauses.
+| | Mod | What it does | Command |
+| :-: | --- | --- | --- |
+| 🔀 | [**auto-model**](#-auto-model) | Routes each turn to Haiku, Sonnet or Opus by workload, switching only when the cache re-write pays off. | `/auto-model` |
+| 📊 | [**usage-status**](#-usage-status) | A pill above the prompt: model, context, cost, rate limits. Auto-compacts at 250k. | |
+| 🪙 | [**token-usage**](#-token-usage) | A live pane charting input, output and cache tokens. | `/tokens` |
+| ✂️ | [**trim-startup-context**](#%EF%B8%8F-trim-startup-context) | Finds and denies MCP servers you never use. | `/trim-context` |
+| 🛡️ | [**shell-guard**](#%EF%B8%8F-shell-guard) | Blocks Bash commands known to hang or fail on Windows, with the fix. | |
 
-```
-/auto-model                      show status and recent routing
-/auto-model on | off             enable or pause routing
-/auto-model haiku|sonnet|opus    pin one tier
-/auto-model set <tier> <id>      use an exact model ID for a tier
-/auto-model reset                clear ID overrides
-```
+---
 
-**Model IDs.** Nothing is tied to one release. For each tier the ID is, in order: your `set` override; your session's current ID with the family swapped (`claude-opus-6-0` gives `claude-haiku-6-0`); a built-in default in `hooks/lib.ts`. If a derived ID is refused before any output, the turn retries once on the built-in ID.
+## 🔀 auto-model
+
+Most turns don't need your biggest model. A Haiku classifier labels each prompt *simple*, *moderate* or *complex* and routes it to Haiku, Sonnet or Opus.
+
+The catch: **switching models invalidates the prompt cache.** So a downgrade only happens when the cheaper model repays the cache re-write within a few turns. Upgrades are always allowed. If you pick a model with `/model`, auto-model steps aside.
+
+| Command | Effect |
+| --- | --- |
+| `/auto-model` | Show status and recent routing |
+| `/auto-model on` · `off` | Enable or pause routing |
+| `/auto-model haiku` · `sonnet` · `opus` | Pin one tier |
+| `/auto-model set <tier> <id>` | Use an exact model ID for a tier |
+| `/auto-model reset` | Clear ID overrides |
+
+<details>
+<summary><b>Model IDs: nothing is tied to one release</b></summary>
+
+For each tier the ID is, in order:
+
+1. your `set` override;
+2. your session's current ID with the family swapped (`claude-opus-6-0` becomes `claude-haiku-6-0`);
+3. a built-in default in `hooks/lib.ts`.
+
+If a derived ID is refused before any output, the turn retries once on the built-in ID.
 
 The cost model (relative prices, expected turns per switch) uses assumptions in `hooks/lib.ts`, not billing data. Adjust them to your plan.
+</details>
 
-## usage-status
+## 📊 usage-status
 
-A pill above the prompt showing the current model, context used, session cost and rate-limit usage with time to reset. It turns to a warning state at 80%. It auto-compacts the conversation at 250k tokens. If auto-model is installed, the pill shows the model actually sent and notices when you change it with `/model`.
+A pill above the prompt showing the current model, context used, session cost and rate-limit usage with time to reset. It turns to a warning state at 80% and auto-compacts the conversation at 250k tokens. With auto-model installed, it shows the model actually sent and notices when you change it with `/model`.
 
-## token-usage
+## 🪙 token-usage
 
-`/tokens` opens a narrow pane beside the transcript charting this session's tokens in four series: new input, cache read, cache write and output, with the last turns shown as they happen. Colours are colourblind-safe.
+`/tokens` opens a narrow pane beside the transcript charting this session's tokens in four colourblind-safe series: **new input**, **cache read**, **cache write** and **output**, updated turn by turn.
 
-## trim-startup-context
+## ✂️ trim-startup-context
 
-MCP servers add their tool schemas to every session's startup context, used or not. This mod scans your last 30 session transcripts and finds servers that are loaded but never called. With at least 5 sessions of history it denies them for the current project automatically.
+MCP servers add their tool schemas to every session's startup context, used or not. This mod scans your last 30 session transcripts for servers that are loaded but never called. With at least 5 sessions of history, it denies them for the current project automatically.
 
 ```
 /trim-context           show unused servers and the tokens they cost
@@ -53,19 +93,32 @@ MCP servers add their tool schemas to every session's startup context, used or n
 /trim-context undo      revert, and stop auto-trimming this project
 ```
 
-## shell-guard
+## 🛡️ shell-guard
 
-Blocks Bash commands that are known to hang or fail on Windows, and says what to do instead. Current rules:
+Blocks Bash commands that hang or fail on Windows, and says what to do instead.
 
-- `cat > file` with no heredoc or input waits on stdin forever. Use the Write tool or a heredoc.
-- A Python string literal ending in a backslash before the closing quote is a syntax error. Use a raw string or `chr(92)`.
+| Blocked | Why | Use instead |
+| --- | --- | --- |
+| `cat > file` with no heredoc or input | Waits on stdin forever | The Write tool, or a heredoc |
+| Python string ending in a backslash before the quote | Syntax error | A raw string, or `chr(92)` |
 
-Rules live in `shell-guard/hooks/lib.ts`; add your own as `{ test, why }` entries.
+Add your own rules in `shell-guard/hooks/lib.ts` as `{ test, why }` entries.
 
-## Develop
+---
 
-Each mod has tests: `claude plugin test <mod folder>` and `claude plugin validate <mod folder>`.
+## 🛠️ Develop
 
-## License
+```
+claude plugin validate <mod folder>
+claude plugin test <mod folder>
+```
 
-MIT
+Each mod keeps its logic in `hooks/lib.ts` with tests beside it, and the Claude Code wiring in `hooks/register.ts(x)`.
+
+## 🤝 Contributing
+
+Issues and PRs welcome. Keep each mod small, tested and independent.
+
+## 📄 License
+
+[MIT](LICENSE) © Aneeq Fayyaz Karim Malik
